@@ -48,12 +48,10 @@ export default function LoginPage() {
 
       {/* ── Left Panel — Branding ── */}
       <div style={{
-        flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        flex: 1, flexDirection: 'column', justifyContent: 'center',
         padding: '64px', borderRight: '1px solid #2E2E2E',
         display: 'none',
-      }}
-        className="lg:flex lg:flex-col"
-      >
+      }}>
         <div style={{ maxWidth: '480px' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '10px',
