@@ -6,38 +6,17 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 import AppLayout from './components/shared/AppLayout'
 import LoginPage from './pages/LoginPage'
 import CEODashboard from './pages/CEODashboard'
+import EmployeesPage from './pages/EmployeesPage'
+import ClientsPage from './pages/ClientsPage'
 
-// Placeholder pages — to be built module by module
 function PlaceholderPage({ title }) {
   return (
     <div style={{ padding: '32px', flex: 1 }}>
-      <div style={{
-        background: '#141414', border: '1px solid #1C1C1C',
-        borderRadius: '12px', padding: '48px',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        minHeight: '400px', gap: '16px',
-      }}>
-        <div style={{
-          width: 60, height: 60, borderRadius: '16px',
-          background: '#E8700A18', border: '1px solid #E8700A33',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '24px',
-        }}>🔨</div>
-        <h2 style={{
-          fontFamily: '"Playfair Display", serif',
-          color: '#F5F5F5', fontSize: '22px', fontWeight: 700,
-        }}>{title}</h2>
-        <p style={{ color: '#555', fontSize: '14px', textAlign: 'center', maxWidth: '400px' }}>
-          This module is being built. It will be fully functional as we progress through each phase of the AfricaKai platform.
-        </p>
-        <div style={{
-          background: '#E8700A18', border: '1px solid #E8700A33',
-          borderRadius: '8px', padding: '10px 20px',
-          color: '#E8700A', fontSize: '13px', fontWeight: 600,
-        }}>
-          Coming in Phase {title.includes('Finance') || title.includes('Invoice') ? '2' : title.includes('Branch') ? '3' : '2'}
-        </div>
+      <div style={{ background: '#141414', border: '1px solid #1C1C1C', borderRadius: '12px', padding: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '16px' }}>
+        <div style={{ width: 60, height: 60, borderRadius: '16px', background: '#E8700A18', border: '1px solid #E8700A33', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>🔨</div>
+        <h2 style={{ fontFamily: '"Playfair Display", serif', color: '#F5F5F5', fontSize: '22px', fontWeight: 700 }}>{title}</h2>
+        <p style={{ color: '#555', fontSize: '14px', textAlign: 'center', maxWidth: '400px' }}>This module is being built and will be available soon.</p>
+        <div style={{ background: '#E8700A18', border: '1px solid #E8700A33', borderRadius: '8px', padding: '10px 20px', color: '#E8700A', fontSize: '13px', fontWeight: 600 }}>Coming Soon</div>
       </div>
     </div>
   )
@@ -48,13 +27,12 @@ function DashboardRouter() {
   switch (role) {
     case ROLES.CEO: return <CEODashboard />
     case ROLES.COO: return <CEODashboard />
-    default: return <CEODashboard /> // will be replaced with role-specific dashboards
+    default: return <CEODashboard />
   }
 }
 
 export default function AppRouter() {
   const { init } = useAuthStore()
-
   useEffect(() => { init() }, [])
 
   return (
@@ -71,20 +49,14 @@ export default function AppRouter() {
           </div>
         } />
 
-        {/* Protected — All Authenticated Users */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Navigate to="/dashboard" replace />
-            </AppLayout>
-          </ProtectedRoute>
-        } />
+        {/* Protected */}
+        <Route path="/" element={<ProtectedRoute><AppLayout><Navigate to="/dashboard" replace /></AppLayout></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><AppLayout><DashboardRouter /></AppLayout></ProtectedRoute>} />
 
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <AppLayout><DashboardRouter /></AppLayout>
-          </ProtectedRoute>
-        } />
+        {/* Employees & Clients — LIVE */}
+        <Route path="/employees" element={<ProtectedRoute><AppLayout><EmployeesPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/bizcom/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
 
         {/* Departments */}
         <Route path="/finance" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Finance Department" /></AppLayout></ProtectedRoute>} />
@@ -93,7 +65,7 @@ export default function AppRouter() {
         <Route path="/finance/payouts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Payouts" /></AppLayout></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Admin / Operations" /></AppLayout></ProtectedRoute>} />
         <Route path="/hr" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Human Resources" /></AppLayout></ProtectedRoute>} />
-        <Route path="/hr/employees" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Employees" /></AppLayout></ProtectedRoute>} />
+        <Route path="/hr/employees" element={<ProtectedRoute><AppLayout><EmployeesPage /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/onboarding" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Onboarding" /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/contracts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Contracts" /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/disciplinary" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Disciplinary" /></AppLayout></ProtectedRoute>} />
@@ -103,22 +75,20 @@ export default function AppRouter() {
         <Route path="/risk" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Risk & Compliance" /></AppLayout></ProtectedRoute>} />
 
         {/* Divisions */}
-        <Route path="/bizcom/clients" element={<ProtectedRoute><AppLayout><PlaceholderPage title="BizCom Clients" /></AppLayout></ProtectedRoute>} />
         <Route path="/bizcom/work-orders" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Work Orders" /></AppLayout></ProtectedRoute>} />
         <Route path="/bizcom/orange-army" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Management" /></AppLayout></ProtectedRoute>} />
         <Route path="/bizcom/quality" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Quality Control" /></AppLayout></ProtectedRoute>} />
 
         {/* Executive */}
-        <Route path="/clients" element={<ProtectedRoute><AppLayout><PlaceholderPage title="All Clients" /></AppLayout></ProtectedRoute>} />
-        <Route path="/employees" element={<ProtectedRoute><AppLayout><PlaceholderPage title="All Employees" /></AppLayout></ProtectedRoute>} />
         <Route path="/orange-army" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army" /></AppLayout></ProtectedRoute>} />
         <Route path="/divisions" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Divisions" /></AppLayout></ProtectedRoute>} />
         <Route path="/branches" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Branches" /></AppLayout></ProtectedRoute>} />
         <Route path="/risk-flags" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Risk Flags" /></AppLayout></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Reports" /></AppLayout></ProtectedRoute>} />
         <Route path="/my-team" element={<ProtectedRoute><AppLayout><PlaceholderPage title="My Team" /></AppLayout></ProtectedRoute>} />
-
-        {/* Orange Army Portal */}
+        <Route path="/communication" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Communication" /></AppLayout></ProtectedRoute>} />
+        <Route path="/flags" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Flags" /></AppLayout></ProtectedRoute>} />
+        <Route path="/deadlines" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Deadlines" /></AppLayout></ProtectedRoute>} />
         <Route path="/assignments" element={<ProtectedRoute><AppLayout><PlaceholderPage title="My Assignments" /></AppLayout></ProtectedRoute>} />
         <Route path="/earnings" element={<ProtectedRoute><AppLayout><PlaceholderPage title="My Earnings" /></AppLayout></ProtectedRoute>} />
 
