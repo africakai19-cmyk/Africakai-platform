@@ -20,38 +20,48 @@ const LEAD_SOURCES = [
   { value: 'website', label: 'Website' },
   { value: 'walk_in', label: 'Walk In' },
   { value: 'social', label: 'Social Media' },
-  { value: 'orange_army', label: 'Orange Army' },
   { value: 'other', label: 'Other' },
-]
-
-const DIVISIONS = [
-  { value: 'bizcom', label: 'Business Compliance' },
-  { value: 'consulting', label: 'Management Consulting' },
 ]
 
 const EMPTY_FORM = {
   company_name: '', trading_as: '', reg_number: '', vat_number: '',
   entity_type: '', industry: '', contact_first: '', contact_last: '',
   contact_email: '', contact_phone: '', address: '', city: '',
-  province: '', division_id: '', lead_source: '', status: 'active',
+  province: '', lead_source: '', status: 'active',
 }
 
 export default function ClientsPage() {
   const [clients, setClients] = useState([])
+  const [divisions, setDivisions] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
+  const [selectedDivision, setSelectedDivision] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
 
-  useEffect(() => { fetchClients() }, [])
+  useEffect(() => {
+    fetchClients()
+    fetchDivisions()
+  }, [])
+
+  async function fetchDivisions() {
+    const { data } = await supabase
+      .from('divisions')
+      .select('id, name, code')
+      .eq('active', true)
+    setDivisions(data || [])
+  }
 
   async function fetchClients() {
     setLoading(true)
-    const { data } = await supabase.from('clients').select('*').order('created_at', { ascending: false })
+    const { data } = await supabase
+      .from('clients')
+      .select('*')
+      .order('created_at', { ascending: false })
     setClients(data || [])
     setLoading(false)
   }
@@ -61,10 +71,13 @@ export default function ClientsPage() {
     setSaving(true)
     setError(null)
     try {
-      const { error } = await supabase.from('clients').insert([form])
+      const payload = { ...form }
+      if (selectedDivision) payload.division_id = selectedDivision
+      const { error } = await supabase.from('clients').insert([payload])
       if (error) throw error
       setSuccess(`${form.company_name} added successfully! Client number auto-assigned.`)
       setForm(EMPTY_FORM)
+      setSelectedDivision('')
       setShowForm(false)
       fetchClients()
       setTimeout(() => setSuccess(null), 5000)
@@ -101,15 +114,15 @@ export default function ClientsPage() {
         </div>
       )}
 
-      <div className="animate-in delay-1" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#1C1C1C', border: '1px solid #2E2E2E', borderRadius: '8px', padding: '10px 14px', flex: 1 }}>
           <Search size={15} color="#555" />
-          <input placeholder="Search by company, email, client number, city..." value={search} onChange={e => setSearch(e.target.value)}
+          <input placeholder="Search by company, email, client number..." value={search} onChange={e => setSearch(e.target.value)}
             style={{ background: 'none', border: 'none', outline: 'none', color: '#999', fontSize: '13px', width: '100%', fontFamily: '"DM Sans", sans-serif' }} />
         </div>
       </div>
 
-      <div className="ak-card animate-in delay-2" style={{ overflow: 'hidden' }}>
+      <div className="ak-card" style={{ overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: '48px', textAlign: 'center', color: '#555' }}>Loading clients...</div>
         ) : filtered.length === 0 ? (
@@ -227,9 +240,11 @@ export default function ClientsPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '20px' }}>
                 <div>
                   <label style={{ display: 'block', color: '#666', fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '7px' }}>Division *</label>
-                  <select className="ak-input" value={form.division_id} onChange={e => f('division_id', e.target.value)} required style={{ cursor: 'pointer' }}>
+                  <select className="ak-input" value={selectedDivision} onChange={e => setSelectedDivision(e.target.value)} required style={{ cursor: 'pointer' }}>
                     <option value="">Select division...</option>
-                    {DIVISIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
+                    {divisions.map(d => (
+                      <option key={d.id} value={d.id}>{d.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -326,7 +341,6 @@ export default function ClientsPage() {
           </div>
         </div>
       )}
-
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
