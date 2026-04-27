@@ -9,7 +9,7 @@ import CEODashboard from './pages/CEODashboard'
 import EmployeesPage from './pages/EmployeesPage'
 import ClientsPage from './pages/ClientsPage'
 import ServicesPage from './pages/ServicesPage'
-import WorkOrdersPage from './pages/WorkOrdersPage'
+
 
 function PlaceholderPage({ title }) {
   return (
@@ -77,12 +77,12 @@ export default function AppRouter() {
         <Route path="/risk" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Risk & Compliance" /></AppLayout></ProtectedRoute>} />
 
         {/* Divisions */}
-        <Route path="/bizcom/work-orders" element={<ProtectedRoute><AppLayout><WorkOrdersPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/bizcom/work-orders" element={<ProtectedRoute><AppLayout><ServicesPage /></AppLayout></ProtectedRoute>} />
         <Route path="/bizcom/orange-army" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Management" /></AppLayout></ProtectedRoute>} />
         <Route path="/bizcom/quality" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Quality Control" /></AppLayout></ProtectedRoute>} />
 
         {/* Executive */}
-        <Route path="/work-orders" element={<ProtectedRoute><AppLayout><WorkOrdersPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/work-orders" element={<ProtectedRoute><AppLayout><ServicesPage /></AppLayout></ProtectedRoute>} />
         <Route path="/services" element={<ProtectedRoute><AppLayout><ServicesPage /></AppLayout></ProtectedRoute>} />
         <Route path="/orange-army" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army" /></AppLayout></ProtectedRoute>} />
         <Route path="/divisions" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Divisions" /></AppLayout></ProtectedRoute>} />
