@@ -15,6 +15,7 @@ const NAV = {
       { icon: Building2,       label: 'Branches',        path: '/branches' },
       { icon: AlertTriangle,   label: 'Risk Flags',      path: '/risk-flags', badge: 3 },
       { icon: FileText,        label: 'Reports',         path: '/reports' },
+      { icon: Briefcase,       label: 'Work Orders',     path: '/work-orders' },
     ]},
     { section: 'DEPARTMENTS', items: [
       { icon: DollarSign,      label: 'Finance',         path: '/finance' },
@@ -28,6 +29,7 @@ const NAV = {
       { icon: Users,           label: 'All Employees',   path: '/employees' },
       { icon: Star,            label: 'Orange Army',     path: '/orange-army' },
       { icon: Briefcase,       label: 'Clients',         path: '/clients' },
+      { icon: FileText,        label: 'Services',        path: '/services' },
     ]},
   ],
 }
