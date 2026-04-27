@@ -9,6 +9,7 @@ import CEODashboard from './pages/CEODashboard'
 import EmployeesPage from './pages/EmployeesPage'
 import ClientsPage from './pages/ClientsPage'
 import ServicesPage from './pages/ServicesPage'
+import FinancePage from './pages/FinancePage'
 
 
 function PlaceholderPage({ title }) {
@@ -61,7 +62,7 @@ export default function AppRouter() {
         <Route path="/bizcom/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
 
         {/* Departments */}
-        <Route path="/finance" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Finance Department" /></AppLayout></ProtectedRoute>} />
+        <Route path="/finance" element={<ProtectedRoute><AppLayout><FinancePage /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/invoices" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Invoices" /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/quotes" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Quotes" /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/payouts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Payouts" /></AppLayout></ProtectedRoute>} />
