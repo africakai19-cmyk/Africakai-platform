@@ -121,31 +121,42 @@ export default function ServicesPage() {
     setSaving(true)
     setError(null)
     try {
-      // First ensure service exists or create it
+      // Look up service without .single() to avoid crash
+      const { data: existingSvcs } = await supabase
+        .from('services')
+        .select('id')
+        .eq('code', form.service_code)
+
       let serviceId = null
-      const { data: existingSvc } = await supabase.from('services').select('id').eq('code', form.service_code).single()
-      if (existingSvc) {
-        serviceId = existingSvc.id
+
+      if (existingSvcs && existingSvcs.length > 0) {
+        serviceId = existingSvcs[0].id
       } else {
-        const cat = SERVICES_CATALOGUE[form.service_category]
-        const svc = cat?.services.find(s => s.code === form.service_code)
-        const { data: newSvc } = await supabase.from('services').insert([{
-          code: form.service_code, name: form.service_name,
-          base_price: form.price, active: true,
-        }]).select().single()
-        serviceId = newSvc?.id
+        // Create the service
+        const { data: newSvc, error: svcErr } = await supabase
+          .from('services')
+          .insert([{
+            code: form.service_code,
+            name: form.service_name,
+            base_price: parseFloat(form.price) || 0,
+            active: true,
+          }])
+          .select()
+        if (svcErr) throw svcErr
+        serviceId = newSvc?.[0]?.id
       }
 
-      const { error } = await supabase.from('work_orders').insert([{
+      // Create work order
+      const { error: woErr } = await supabase.from('work_orders').insert([{
         client_id: form.client_id,
         service_id: serviceId,
         status: 'draft',
         priority: 'normal',
         due_date: form.due_date || null,
-        notes: form.notes,
+        notes: form.notes || null,
         assigned_to: form.assigned_to || null,
       }])
-      if (error) throw error
+      if (woErr) throw woErr
 
       setSuccess('Work order created! Next step: send the service agreement to the client.')
       setForm(EMPTY_FORM)
