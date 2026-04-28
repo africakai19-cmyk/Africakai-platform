@@ -10,6 +10,7 @@ import EmployeesPage from './pages/EmployeesPage'
 import ClientsPage from './pages/ClientsPage'
 import ServicesPage from './pages/ServicesPage'
 import FinancePage from './pages/FinancePage'
+import AdminPage from './pages/AdminPage'
 
 
 function PlaceholderPage({ title }) {
@@ -66,7 +67,7 @@ export default function AppRouter() {
         <Route path="/finance/invoices" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Invoices" /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/quotes" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Quotes" /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/payouts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Payouts" /></AppLayout></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Admin / Operations" /></AppLayout></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AppLayout><AdminPage /></AppLayout></ProtectedRoute>} />
         <Route path="/hr" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Human Resources" /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/employees" element={<ProtectedRoute><AppLayout><EmployeesPage /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/onboarding" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Onboarding" /></AppLayout></ProtectedRoute>} />
