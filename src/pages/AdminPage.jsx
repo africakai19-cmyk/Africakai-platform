@@ -69,7 +69,7 @@ export default function AdminPage() {
     const [cl, dl, cm, fl] = await Promise.all([
       supabase.from('clients').select('id, company_name, client_number, contact_email, contact_phone').eq('status', 'active'),
       supabase.from('compliance_deadlines').select(`*, clients(company_name, client_number)`).order('due_date', { ascending: true }),
-      supabase.from('communications').select(`*, clients(company_name)`).order('sent_at', { ascending: false }).limit(50),
+      supabase.from('communications').select(`*, clients!communications_client_id_fkey(company_name)`).order('sent_at', { ascending: false }).limit(50),
       supabase.from('risk_flags').select(`*, clients(company_name)`).eq('status', 'open').order('created_at', { ascending: false }),
     ])
     setClients(cl.data || [])
