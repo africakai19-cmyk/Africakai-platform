@@ -56,7 +56,7 @@ export default function HRPage() {
     setLoading(true)
     const [em, lv, dc] = await Promise.all([
       supabase.from('employees').select('*').order('created_at', { ascending: false }),
-      supabase.from('leave_requests').select(`*, employees(first_name, last_name, role_label)`).order('created_at', { ascending: false }),
+      supabase.from('leave_requests').select(`*, employees!leave_requests_employee_id_fkey(first_name, last_name, role_label)`).order('created_at', { ascending: false }),
       supabase.from('risk_flags').select(`*, employees!risk_flags_employee_id_fkey(first_name, last_name)`).eq('flag_type', 'disciplinary').order('created_at', { ascending: false }),
     ])
     setEmployees(em.data || [])
