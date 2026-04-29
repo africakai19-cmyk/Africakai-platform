@@ -11,6 +11,7 @@ import ClientsPage from './pages/ClientsPage'
 import ServicesPage from './pages/ServicesPage'
 import FinancePage from './pages/FinancePage'
 import AdminPage from './pages/AdminPage'
+import HRPage from './pages/HRPage'
 
 
 function PlaceholderPage({ title }) {
@@ -68,12 +69,12 @@ export default function AppRouter() {
         <Route path="/finance/quotes" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Quotes" /></AppLayout></ProtectedRoute>} />
         <Route path="/finance/payouts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Orange Army Payouts" /></AppLayout></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AppLayout><AdminPage /></AppLayout></ProtectedRoute>} />
-        <Route path="/hr" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Human Resources" /></AppLayout></ProtectedRoute>} />
-        <Route path="/hr/employees" element={<ProtectedRoute><AppLayout><EmployeesPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/hr" element={<ProtectedRoute><AppLayout><HRPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/hr/employees" element={<ProtectedRoute><AppLayout><HRPage /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/onboarding" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Onboarding" /></AppLayout></ProtectedRoute>} />
         <Route path="/hr/contracts" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Contracts" /></AppLayout></ProtectedRoute>} />
-        <Route path="/hr/disciplinary" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Disciplinary" /></AppLayout></ProtectedRoute>} />
-        <Route path="/hr/leave" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Leave Management" /></AppLayout></ProtectedRoute>} />
+        <Route path="/hr/disciplinary" element={<ProtectedRoute><AppLayout><HRPage /></AppLayout></ProtectedRoute>} />
+        <Route path="/hr/leave" element={<ProtectedRoute><AppLayout><HRPage /></AppLayout></ProtectedRoute>} />
         <Route path="/marketing" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Marketing & Sales" /></AppLayout></ProtectedRoute>} />
         <Route path="/it" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Information Technology" /></AppLayout></ProtectedRoute>} />
         <Route path="/risk" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Risk & Compliance" /></AppLayout></ProtectedRoute>} />
