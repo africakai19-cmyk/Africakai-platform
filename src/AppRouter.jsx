@@ -12,6 +12,7 @@ import ServicesPage from './pages/ServicesPage'
 import FinancePage from './pages/FinancePage'
 import AdminPage from './pages/AdminPage'
 import HRPage from './pages/HRPage'
+import RiskPage from './pages/RiskPage'
 
 
 function PlaceholderPage({ title }) {
@@ -77,7 +78,7 @@ export default function AppRouter() {
         <Route path="/hr/leave" element={<ProtectedRoute><AppLayout><HRPage /></AppLayout></ProtectedRoute>} />
         <Route path="/marketing" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Marketing & Sales" /></AppLayout></ProtectedRoute>} />
         <Route path="/it" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Information Technology" /></AppLayout></ProtectedRoute>} />
-        <Route path="/risk" element={<ProtectedRoute><AppLayout><PlaceholderPage title="Risk & Compliance" /></AppLayout></ProtectedRoute>} />
+        <Route path="/risk" element={<ProtectedRoute><AppLayout><RiskPage /></AppLayout></ProtectedRoute>} />
 
         {/* Divisions */}
         <Route path="/bizcom/work-orders" element={<ProtectedRoute><AppLayout><ServicesPage /></AppLayout></ProtectedRoute>} />
