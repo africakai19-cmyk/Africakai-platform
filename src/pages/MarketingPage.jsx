@@ -78,6 +78,39 @@ export default function MarketingPage() {
     setLoading(false)
   }
 
+  async function handleImport(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    const text = await file.text()
+    const lines = text.split('\n').filter(l => l.trim())
+    const headers = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''))
+    const rows = lines.slice(1)
+    let imported = 0
+    for (const row of rows) {
+      const values = row.split(',').map(v => v.trim().replace(/"/g, ''))
+      const lead = {}
+      headers.forEach((h, i) => { lead[h] = values[i] || '' })
+      const record = {
+        contact_name: lead.contact_name || lead.name || lead['contact name'] || '',
+        company_name: lead.company_name || lead.company || lead['company name'] || '',
+        email: lead.email || '',
+        phone: lead.phone || lead['phone number'] || lead.mobile || '',
+        source: lead.source || 'other',
+        service_interest: lead.service_interest || lead.service || lead['service interest'] || '',
+        notes: lead.notes || '',
+        status: 'new',
+      }
+      if (record.contact_name || record.email) {
+        await supabase.from('leads').insert([record])
+        imported++
+      }
+    }
+    setSuccess(`Successfully imported ${imported} leads!`)
+    fetchAll()
+    setTimeout(() => setSuccess(null), 5000)
+    e.target.value = ''
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setSaving(true)
@@ -149,9 +182,15 @@ export default function MarketingPage() {
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '28px', fontWeight: 700, color: '#F5F5F5', marginBottom: '6px' }}>Marketing & Sales</h1>
           <p style={{ color: '#555', fontSize: '14px' }}>Lead pipeline, client acquisition and retention</p>
         </div>
-        <button className="ak-btn" onClick={() => setShowForm(true)} style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}>
-          <Plus size={16} /> Add Lead
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#1C1C1C', border: '1px solid #2E2E2E', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', color: '#888', fontSize: '14px', fontWeight: 600, fontFamily: '"DM Sans", sans-serif' }}>
+            <FileText size={15} /> Import CSV
+            <input type="file" accept=".csv" style={{ display: 'none' }} onChange={handleImport} />
+          </label>
+          <button className="ak-btn" onClick={() => setShowForm(true)} style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}>
+            <Plus size={16} /> Add Lead
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
