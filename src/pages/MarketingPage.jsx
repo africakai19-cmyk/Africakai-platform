@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import {
   TrendingUp, Plus, Search, X, Check, AlertCircle,
   Star, Phone, Mail, Building2, Eye, ChevronRight,
-  Users, Target, MessageSquare, CheckCircle, Clock,
+  Users, Target, MessageSquare, CheckCircle, Clock, FileText,
 } from 'lucide-react'
 
 const LEAD_SOURCES = [
