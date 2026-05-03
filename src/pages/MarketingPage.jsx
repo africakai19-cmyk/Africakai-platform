@@ -81,34 +81,67 @@ export default function MarketingPage() {
   async function handleImport(e) {
     const file = e.target.files[0]
     if (!file) return
-    const text = await file.text()
-    const lines = text.split('\n').filter(l => l.trim())
-    const headers = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''))
-    const rows = lines.slice(1)
-    let imported = 0
-    for (const row of rows) {
-      const values = row.split(',').map(v => v.trim().replace(/"/g, ''))
-      const lead = {}
-      headers.forEach((h, i) => { lead[h] = values[i] || '' })
-      const record = {
-        contact_name: lead.contact_name || lead.name || lead['contact name'] || '',
-        company_name: lead.company_name || lead.company || lead['company name'] || '',
-        email: lead.email || '',
-        phone: lead.phone || lead['phone number'] || lead.mobile || '',
-        source: lead.source || 'other',
-        service_interest: lead.service_interest || lead.service || lead['service interest'] || '',
-        notes: lead.notes || '',
-        status: 'new',
+    setSaving(true)
+    try {
+      const text = await file.text()
+      const lines = text.split('\n').filter(l => l.trim())
+      if (lines.length < 2) { setError('CSV file is empty or has no data rows.'); return }
+
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase())
+      const rows = lines.slice(1)
+
+      // Parse CSV row handling commas inside quotes
+      function parseRow(row) {
+        const result = []
+        let current = ''
+        let inQuotes = false
+        for (let i = 0; i < row.length; i++) {
+          if (row[i] === '"') { inQuotes = !inQuotes }
+          else if (row[i] === ',' && !inQuotes) { result.push(current.trim()); current = '' }
+          else { current += row[i] }
+        }
+        result.push(current.trim())
+        return result
       }
-      if (record.contact_name || record.email) {
-        await supabase.from('leads').insert([record])
-        imported++
+
+      let imported = 0
+      const records = []
+      for (const row of rows) {
+        const values = parseRow(row)
+        const lead = {}
+        headers.forEach((h, i) => { lead[h] = values[i] || '' })
+
+        // Map YOUR specific CSV columns
+        const record = {
+          contact_name: lead['director name(s)'] || lead['contact name'] || lead.name || '',
+          company_name: lead['company name'] || lead.company || '',
+          email: lead['email'] || lead['email address'] || '',
+          phone: lead['phone no.'] || lead['tell no.'] || lead.phone || '',
+          source: lead['lead source'] ? lead['lead source'].toLowerCase().replace(' ', '_') : 'other',
+          service_interest: lead['industry type'] || lead.service || '',
+          notes: lead.comment || lead.notes || '',
+          status: 'new',
+        }
+        if (record.contact_name || record.email || record.company_name) {
+          records.push(record)
+          imported++
+        }
       }
+
+      if (records.length > 0) {
+        const { error } = await supabase.from('leads').insert(records)
+        if (error) throw error
+      }
+
+      setSuccess(`Successfully imported ${imported} leads!`)
+      fetchAll()
+      setTimeout(() => setSuccess(null), 5000)
+    } catch (err) {
+      setError('Import failed: ' + err.message)
+    } finally {
+      setSaving(false)
+      e.target.value = ''
     }
-    setSuccess(`Successfully imported ${imported} leads!`)
-    fetchAll()
-    setTimeout(() => setSuccess(null), 5000)
-    e.target.value = ''
   }
 
   async function handleSubmit(e) {
